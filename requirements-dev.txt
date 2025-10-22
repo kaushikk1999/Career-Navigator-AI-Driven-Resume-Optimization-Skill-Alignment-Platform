@@ -1,5 +1,0 @@
-pytest==8.3.2
-pytest-timeout==2.3.1
-rapidfuzz==3.9.6
-black==24.8.0
-pdfminer.six==20221105
