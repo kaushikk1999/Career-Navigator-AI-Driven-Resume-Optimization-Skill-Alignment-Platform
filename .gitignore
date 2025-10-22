@@ -1,0 +1,43 @@
+# macOS artifacts
+.DS_Store
+
+# Editor configs
+.vscode/
+.idea/
+*.swp
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+.env.*
+env.*
+!.env.example
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Google Cloud service accounts
+cv-maker-*.json
+*serviceaccount*.json
+
+# Logs and local databases
+*.log
+*.tmp
+*.sqlite
+*.db
+
+# Local data and OCR models
+data/
+outputs/
+tessdata/

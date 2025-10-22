@@ -1,5 +1,10 @@
-import streamlit as st, json
+import json
+import os
+import tempfile
 from datetime import datetime, timezone
+from pathlib import Path
+
+import streamlit as st
 
 st.set_page_config(page_title="Phase 1 · OCR Ingest", layout="wide")
 st.title("Phase 1 · OCR Ingest")
@@ -26,6 +31,27 @@ show_previews = st.checkbox("Show preprocessing previews (first few pages)", val
 normalize_typos = st.checkbox("Normalize output (typo fixes)", value=False, key="w_normalize_typos")
 run = st.button("Run OCR", type="primary", use_container_width=True, key="w_run")
 st.caption(f"Vision consent: {consent_api} • Engine: {engine} • PSM: {psm_choice}")
+
+
+def ensure_gcp_credentials() -> None:
+    """Derive credentials from env or Streamlit secrets without bundling JSON in git."""
+    os.environ.setdefault("GOOGLE_APPLICATION_CREDENTIALS", os.getenv("GCP_SA_KEY_PATH", ""))
+    if os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+        return
+    try:
+        secret_payload = st.secrets["gcp"]["service_account_json"]
+    except Exception:
+        return
+    if isinstance(secret_payload, dict):
+        serialized = json.dumps(secret_payload)
+    else:
+        serialized = str(secret_payload)
+    tmp_path = Path(tempfile.gettempdir()) / "streamlit-gcp-sa.json"
+    tmp_path.write_text(serialized)
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = str(tmp_path)
+
+
+ensure_gcp_credentials()
 
 # small helper to show exceptions nicely
 def show_exc(prefix: str, e: Exception):
